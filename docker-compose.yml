@@ -2,8 +2,8 @@ version: '3.7'
 
 services:
   nginx:
+    image: arm64v8/nginx:1.26-alpine3.19-otel
     container_name: nginx
-    image: nginx:latest
     ports:
       - '4001:80'
     volumes:
@@ -15,21 +15,24 @@ services:
 
   php:
     container_name: php
-    image: php:8-fpm
+    image: arm64v8/php:8.1-fpm
     volumes:
       - ./app:/var/www/html
     networks:
       - backend
+  
   phpmyadmin:
     container_name: phpmyadmin
-    image: phpmyadmin:latest
+    image: arm64v8/phpmyadmin:5.2.1
     restart: always
     ports:
       - 6001:80
+    networks:
+      - backend
     
   db:
     container_name: mysql
-    image: mysql
+    image: arm64v8/mysql:8.4
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password123
@@ -37,6 +40,8 @@ services:
       - "3307:3306"
     volumes:
       - db-vol:/var/lib/mysql
+    networks:
+      - backend
 
 volumes:
   db-vol:
